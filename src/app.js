@@ -11,11 +11,9 @@ app.use(cors({
 }))
 
 // all routes 
-// import userRouter from './routes/userRoute.js'
-// app.use("/api/v1", userRouter);
-app.use('/api/v2',()=>{
-    console.log("routes app.js v2")
-})
+import router from './routes/userRoute.js'
+app.use("/api/v1", router);
+
 
 
 export default app
