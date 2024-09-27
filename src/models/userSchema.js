@@ -33,7 +33,8 @@ const userSchema = new Schema({
     role: {
         type: String,
         enum: ["user", "seller", "admin", "editor"],
-        lowercase: true
+        lowercase: true,
+        default:"user"
     },
     address: [
         { street: String }, { postalCode: String }, { district: String }, { country: String }
