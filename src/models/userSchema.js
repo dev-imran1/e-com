@@ -17,8 +17,8 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, "password is required"],
-        minlength: [8, "minimum length is 8"],
-        select: false
+        // minlength: [8, "minimum length is 8"],
+        // select: false
     },
     phoneNumber: {
         type: String,
