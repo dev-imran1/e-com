@@ -1,4 +1,5 @@
 import { mongo, mongoose, Schema } from "mongoose";
+import bcrypt from 'bcrypt';
 
 
 const userSchema = new Schema({
@@ -17,8 +18,8 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, "password is required"],
-        // minlength: [8, "minimum length is 8"],
-        // select: false
+        minlength: [8, "minimum length is 8"],
+        select: false
     },
     phoneNumber: {
         type: String,
@@ -34,13 +35,21 @@ const userSchema = new Schema({
         type: String,
         enum: ["user", "seller", "admin", "editor"],
         lowercase: true,
-        default:"user"
+        default: "user"
     },
     address: [
         { street: String }, { postalCode: String }, { district: String }, { country: String }
     ]
 }, {
     timestamps: true
+})
+
+userSchema.pre("save", async function (next) {
+
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 10)
+        next()
+    }
 })
 
 
