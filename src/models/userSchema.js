@@ -1,5 +1,6 @@
-import { mongo, mongoose, Schema } from "mongoose";
+import { mongoose, Schema } from "mongoose";
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
 
 
 const userSchema = new Schema({
@@ -39,7 +40,10 @@ const userSchema = new Schema({
     },
     address: [
         { street: String }, { postalCode: String }, { district: String }, { country: String }
-    ]
+    ],
+    refreshToken: {
+        type: String
+    }
 }, {
     timestamps: true
 })
@@ -51,6 +55,30 @@ userSchema.pre("save", async function (next) {
         next()
     }
 })
+
+userSchema.methods.generateAccessToken =async function () {
+    return jwt.sign({
+        id: this._id,
+        email: this.email
+    },
+        process.env.ACCESS_TOKEN_SC, { expiresIn: process.env.ACCESS_TOKEN_EX });
+};
+
+userSchema.methods.generateRefToken =async function () {
+    return jwt.sign({
+        data: this._id,
+        email: this.email,
+    }, process.env.REFRESH_TOKEN_SC, { expiresIn: process.env.REFRESH_TOKEN_EX });
+}
+
+userSchema.methods.AccessTokenVerfiy =async function (token) {
+    return jwt.verify(token, process.env.ACCESS_TOKEN_SC, function(err,decoded){
+        if(err){
+            return null
+        }
+        return decoded
+    });
+}
 
 
 export const User = mongoose.model("User", userSchema);

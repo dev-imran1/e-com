@@ -1,4 +1,5 @@
-export function verificationTemp() {
+export function verificationTemp(link) {
+  console.log('temp',link)
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -14,9 +15,12 @@ export function verificationTemp() {
         <div style="margin: 20px 0;">
           <h2 style="color: #4CAF50; margin: 0 0 10px 0;">Hello [User's Name],</h2>
           <p style="margin: 0 0 20px 0;">Thank you for signing up for our service! We're excited to have you on board. Please click the button below to verify your email address and get started.</p>
-          <a href="[VerificationLink]" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>
-        </div>
-        <div style="text-align: center; color: #777777; margin-top: 20px; font-size: 12px;">
+          <a href="${process.env.API_URL}/user/${link}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Verify Email</a>
+          
+          </div>
+          <div style="text-align: center; color: #777777; margin-top: 20px; font-size: 12px;">
+          <p>${process.env.API_URL}/user/${link} </p>
+          
           <p>If you did not sign up for this account, please ignore this email.</p>
           <p>&copy; 2024 Your Company. All rights reserved.</p>
         </div>
