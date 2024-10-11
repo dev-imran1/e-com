@@ -2,6 +2,7 @@ import { User } from "../models/userSchema.js";
 import bcrypt from 'bcrypt';
 import { mail } from "../utlis/sendmail.js";
 import { verificationTemp } from "../mailTemplate/verificationTemp.js";
+import { cloudinaryUpload } from "../services/cloudinary.js";
 
 const generatToken = async (id) => {
     try {
@@ -157,8 +158,17 @@ const login = async (req, res) => {
 
 
 const userUpdate = async (req, res) => {
-    console.log("hello",req.files)
+    if (req.file) {
+        const { path } = req.file
+        const result = await cloudinaryUpload(path, 'auser', 'profilePic')
+        // result.optimizeUrl
+        // result.uploadResult.public_id
+        res.send("okay")
+    } else {
+        res.send('wrong file')
+    }
 }
+
 
 
 export { createUser, emailVerify, login, userUpdate };

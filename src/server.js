@@ -5,7 +5,4 @@ import { serverPort } from "./config/index.js";
 conntectdb();
 
 
-
-
-
 app.listen(serverPort, ()=>console.log('server is runnig'));
