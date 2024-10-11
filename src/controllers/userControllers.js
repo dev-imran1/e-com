@@ -3,6 +3,22 @@ import bcrypt from 'bcrypt';
 import { mail } from "../utlis/sendmail.js";
 import { verificationTemp } from "../mailTemplate/verificationTemp.js";
 
+const generatToken = async (id) => {
+    try {
+        const user = await User.findById({ _id: id })
+        const accessToken = await user.generateAccessToken()
+        const refreshToken = await user.generateRefToken()
+        user.refreshToken = refreshToken
+        await user.save()
+
+        return { accessToken, refreshToken }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+
 const createUser = async (req, res) => {
     try {
         const { displayName, email, password, phoneNumber } = req.body;
@@ -14,19 +30,19 @@ const createUser = async (req, res) => {
         }
 
         // Hash password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
+
 
         // Create the user with the hashed password
         const user = await User.create({
             displayName,
             email,
-            password: hashedPassword,
+            password,
             phoneNumber
         });
 
         // Generate verification link (assuming generateAccessToken is a method on the user schema)
         const link = await user.generateAccessToken()  // Ensure this function is implemented in your User model
-        console.log('Generated Verification Link:', link);
+        // console.log('Generated Verification Link:', link);
 
         // Send confirmation email with the link
         await mail(user.email, 'Email Verification', 'Please verify your email', verificationTemp(link));
@@ -50,11 +66,13 @@ const emailVerify = async (req, res) => {
         if (result) {
             const { email } = result
             const userFound = await User.findOne({ email })
-            console.log(userFound.emailVerified)
-
             if (userFound) {
+                if (userFound.emailVerified) {
+                    return res.send("allready email verified")
+                }
                 userFound.emailVerified = Date.now()
-                 userFound.save()
+                userFound.save()
+
                 return res.send("verifed")
             } else {
                 return res.send("invalid")
@@ -69,4 +87,78 @@ const emailVerify = async (req, res) => {
     }
 };
 
-export { createUser, emailVerify };
+
+// const login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         // Check if email and password are provided
+//         if (!email || !password) {
+//             return res.status(400).send("All fields are required");
+//         }
+
+//         // Find the user by email
+//         const userFound = await User.findOne({ email });
+//         if (!userFound) {
+//             return res.status(404).send("Email or password not found");
+//         }
+
+//         // Check if the password is correct
+//         const isPasswordCorrect = await userFound.checkPassword(password);
+//         if (!isPasswordCorrect) {
+//             return res.status(401).send("Email or password not found");
+//         }
+
+//         // Generate access and refresh tokens
+//         const { accessToken, refreshToken } = await generatToken(userFound._id);
+
+//         // Send tokens in response
+//         return res.status(200).send({ accessToken, refreshToken });
+//     } catch (error) {
+//         console.log("Login error:", error);
+//         return res.status(500).send("Internal Server Error");
+//     }
+// }
+
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Validate that both email and password are provided
+        if (!email || !password) {
+            return res.status(400).send("Both email and password are required.");
+        }
+
+        // Find the user by email
+        const userFounds = await User.findOne({ email }).select("password");
+
+        if (!userFounds) {
+            return res.status(400).send("Account Not find");
+        }
+
+        // Compare the provided password with the stored hashed password
+        const isPasswordCorrect = await userFounds.checkPassword(password)
+        console.log('ispassword', isPasswordCorrect)
+
+        if (!isPasswordCorrect) {
+            return res.status(400).send("Invalid email or password.");
+        }
+
+        // Generate tokens (assumes a function generatToken exists)
+        const { accessToken, refreshToken } = await generatToken(userFounds._id);
+
+        // Send the tokens in the response
+        return res.status(200).send({ accessToken, refreshToken });
+    } catch (error) {
+        console.log("Login error", error);
+        return res.status(500).send("Internal server error.");
+    }
+};
+
+
+const userUpdate = async (req, res) => {
+    console.log("hello",req.files)
+}
+
+
+export { createUser, emailVerify, login, userUpdate };

@@ -1,5 +1,4 @@
 export function verificationTemp(link) {
-  console.log('temp',link)
     return `<!DOCTYPE html>
     <html lang="en">
     <head>

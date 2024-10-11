@@ -27,10 +27,15 @@ const userSchema = new Schema({
         unique: true
     },
     emailVerified: {
+        // type: Boolean,
+        // default:false
         type: Date,
     },
     resetPasswordToken: {
         type: String,
+    },
+    profilePicture:{
+        type:String
     },
     role: {
         type: String,
@@ -50,13 +55,19 @@ const userSchema = new Schema({
 
 userSchema.pre("save", async function (next) {
 
-    if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 10)
-        next()
-    }
+if (!this.isModified('password')) return next()
+
+  // hash password with cost of 10
+  this.password = await bcrypt.hash(this.password, 10)
+
+  next()
 })
 
-userSchema.methods.generateAccessToken =async function () {
+userSchema.methods.checkPassword = async function (mypassword) {
+    return await bcrypt.compare(mypassword, this.password)
+}
+
+userSchema.methods.generateAccessToken = async function () {
     return jwt.sign({
         id: this._id,
         email: this.email
@@ -64,21 +75,24 @@ userSchema.methods.generateAccessToken =async function () {
         process.env.ACCESS_TOKEN_SC, { expiresIn: process.env.ACCESS_TOKEN_EX });
 };
 
-userSchema.methods.generateRefToken =async function () {
+userSchema.methods.generateRefToken = async function () {
     return jwt.sign({
-        data: this._id,
+        id: this._id,
         email: this.email,
     }, process.env.REFRESH_TOKEN_SC, { expiresIn: process.env.REFRESH_TOKEN_EX });
 }
 
-userSchema.methods.AccessTokenVerfiy =async function (token) {
-    return jwt.verify(token, process.env.ACCESS_TOKEN_SC, function(err,decoded){
-        if(err){
+userSchema.methods.AccessTokenVerfiy = async function (token) {
+    return jwt.verify(token, process.env.ACCESS_TOKEN_SC, function (err, decoded) {
+        if (err) {
             return null
         }
         return decoded
     });
 }
+ 
 
 
 export const User = mongoose.model("User", userSchema);
+
+
