@@ -11,7 +11,6 @@ const generatToken = async (id) => {
         const refreshToken = await user.generateRefToken()
         user.refreshToken = refreshToken
         await user.save()
-
         return { accessToken, refreshToken }
     } catch (error) {
         console.log(error)
@@ -158,14 +157,20 @@ const login = async (req, res) => {
 
 
 const userUpdate = async (req, res) => {
-    if (req.file) {
+    try {
         const { path } = req.file
-        const result = await cloudinaryUpload(path, 'auser', 'profilePic')
-        // result.optimizeUrl
-        // result.uploadResult.public_id
-        res.send("okay")
-    } else {
-        res.send('wrong file')
+        const user = await User.findById(req.user.id)
+        if (user) {
+            const result = await cloudinaryUpload(path, user.displayName, 'profilePic')
+            user.profilePic = result.optimizeUrl
+            user.public_id = result.uploadResult.public_id
+            await user.save()
+            res.send("okay")
+        } else {
+            res.send('wrong file')
+        }
+    } catch (error) {
+        console.log(error.message)
     }
 }
 
