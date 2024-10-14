@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { mail } from "../utlis/sendmail.js";
 import { verificationTemp } from "../mailTemplate/verificationTemp.js";
 import { cloudinaryUpload } from "../services/cloudinary.js";
+import ApiResponse from "../utlis/ApiResponse.js";
 
 const generatToken = async (id) => {
     try {
@@ -88,37 +89,6 @@ const emailVerify = async (req, res) => {
 };
 
 
-// const login = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-
-//         // Check if email and password are provided
-//         if (!email || !password) {
-//             return res.status(400).send("All fields are required");
-//         }
-
-//         // Find the user by email
-//         const userFound = await User.findOne({ email });
-//         if (!userFound) {
-//             return res.status(404).send("Email or password not found");
-//         }
-
-//         // Check if the password is correct
-//         const isPasswordCorrect = await userFound.checkPassword(password);
-//         if (!isPasswordCorrect) {
-//             return res.status(401).send("Email or password not found");
-//         }
-
-//         // Generate access and refresh tokens
-//         const { accessToken, refreshToken } = await generatToken(userFound._id);
-
-//         // Send tokens in response
-//         return res.status(200).send({ accessToken, refreshToken });
-//     } catch (error) {
-//         console.log("Login error:", error);
-//         return res.status(500).send("Internal Server Error");
-//     }
-// }
 
 const login = async (req, res) => {
     try {
@@ -148,7 +118,10 @@ const login = async (req, res) => {
         const { accessToken, refreshToken } = await generatToken(userFounds._id);
 
         // Send the tokens in the response
-        return res.status(200).send({ accessToken, refreshToken });
+        // return res.status(200).send({ accessToken, refreshToken });
+        return res.json(new ApiResponse(200,"login Sucessfull",{
+            accessToken,refreshToken
+        }))
     } catch (error) {
         console.log("Login error", error);
         return res.status(500).send("Internal server error.");
