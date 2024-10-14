@@ -34,11 +34,11 @@ const userSchema = new Schema({
     resetPasswordToken: {
         type: String,
     },
-    profilePicture:{
-        type:String
+    profilePicture: {
+        type: String
     },
-    public_Id:{
-        type:String
+    public_Id: {
+        type: String
     },
     role: {
         type: String,
@@ -58,12 +58,12 @@ const userSchema = new Schema({
 
 userSchema.pre("save", async function (next) {
 
-if (!this.isModified('password')) return next()
+    if (!this.isModified('password')) return next()
 
-  // hash password with cost of 10
-  this.password = await bcrypt.hash(this.password, 10)
+    // hash password with cost of 10
+    this.password = await bcrypt.hash(this.password, 10)
 
-  next()
+    next()
 })
 
 userSchema.methods.checkPassword = async function (mypassword) {
@@ -74,7 +74,8 @@ userSchema.methods.generateAccessToken = async function () {
     return jwt.sign({
         id: this._id,
         email: this.email,
-        displayName:this.displayName
+        displayName: this.displayName,
+        role: this.role
     },
         process.env.ACCESS_TOKEN_SC, { expiresIn: process.env.ACCESS_TOKEN_EX });
 };
@@ -83,7 +84,8 @@ userSchema.methods.generateRefToken = async function () {
     return jwt.sign({
         id: this._id,
         email: this.email,
-        displayName:this.displayName
+        displayName: this.displayName,
+        role: this.role
     }, process.env.REFRESH_TOKEN_SC, { expiresIn: process.env.REFRESH_TOKEN_EX });
 }
 
@@ -95,7 +97,7 @@ userSchema.methods.AccessTokenVerfiy = async function (token) {
         return decoded
     });
 }
- 
+
 
 
 export const User = mongoose.model("User", userSchema);

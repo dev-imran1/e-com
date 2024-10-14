@@ -113,6 +113,9 @@ const login = async (req, res) => {
         if (!isPasswordCorrect) {
             return res.status(400).send("Invalid email or password.");
         }
+        // if (!userFounds.emailVerified) {
+        //     return res.send('email not verified')
+        // }
 
         // Generate tokens (assumes a function generatToken exists)
         const { accessToken, refreshToken } = await generatToken(userFounds._id);
@@ -149,6 +152,16 @@ const userUpdate = async (req, res) => {
     }
 }
 
+const logOut = async(req,res)=>{
+try {
+        const user = await User.findById(req.user.id)
+        user.refreshToken = null
+        await user.save()
+        return res.send('logout done')
+} catch (error) {
+    console.log(error)
+}
+}
 
 
-export { createUser, emailVerify, login, userUpdate };
+export { createUser, emailVerify, login, userUpdate ,logOut};
