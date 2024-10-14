@@ -121,7 +121,9 @@ const login = async (req, res) => {
         // return res.status(200).send({ accessToken, refreshToken });
         return res.json(new ApiResponse(200,"login Sucessfull",{
             accessToken,refreshToken
-        }))
+        }
+    ))
+        // return res.json(new ApiResponse().apiLoginRes())
     } catch (error) {
         console.log("Login error", error);
         return res.status(500).send("Internal server error.");
