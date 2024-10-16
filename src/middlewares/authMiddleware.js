@@ -17,8 +17,6 @@ export const auth = async (req, res, next) => {
                 return result
             }
         })
-
-        console.log('decoded-if ', decodedToken)
         
         
         if (!decodedToken) {

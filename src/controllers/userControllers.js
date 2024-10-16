@@ -122,10 +122,10 @@ const login = async (req, res) => {
 
         // Send the tokens in the response
         // return res.status(200).send({ accessToken, refreshToken });
-        return res.json(new ApiResponse(200,"login Sucessfull",{
-            accessToken,refreshToken
+        return res.json(new ApiResponse(200, "login Sucessfull", {
+            accessToken, refreshToken
         }
-    ))
+        ))
         // return res.json(new ApiResponse().apiLoginRes())
     } catch (error) {
         console.log("Login error", error);
@@ -152,16 +152,16 @@ const userUpdate = async (req, res) => {
     }
 }
 
-const logOut = async(req,res)=>{
-try {
+const logOut = async (req, res) => {
+    try {
         const user = await User.findById(req.user.id)
         user.refreshToken = null
         await user.save()
         return res.send('logout done')
-} catch (error) {
-    console.log(error)
-}
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 
-export { createUser, emailVerify, login, userUpdate ,logOut};
+export { createUser, emailVerify, login, userUpdate, logOut };
