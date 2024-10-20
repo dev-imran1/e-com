@@ -26,7 +26,7 @@ export const auth = async (req, res, next) => {
         // Find the user by the decoded ID in the token
         const user = await User.findById(decodedToken.id);
         if (!user) {
-            return res.status(404).send({ error: 'User not found' });
+            return res.status(404).send({ error: 'authmiddleware from User not found' });
         }
 
         // Attach the user to the request for future use in the route handler

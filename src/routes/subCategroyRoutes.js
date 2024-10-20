@@ -4,10 +4,10 @@ import express from 'express';
 const router = express.Router();
 import { auth } from '../middlewares/authMiddleware.js';
 import { adminAuth } from '../middlewares/adminAuthMiddleware.js';
-import { categoryCreate } from '../controllers/categoryControllers.js';
+import { subCategoryCreate } from '../controllers/subCategroyControllers.js';
 
 
-
-router.route("/categories/create").post(auth,adminAuth,categoryCreate)
+router.route("/subcategories/create").post(auth,adminAuth,subCategoryCreate)
 
 export default router; 
+// 26 minutes

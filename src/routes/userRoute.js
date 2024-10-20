@@ -16,8 +16,6 @@ router.route("/users/:link").get(emailVerify)
 router.route("/users/login").post(login)
 router.route("/users/update").post(auth, upload.single('profilePic'), userUpdate)
 router.route("/users/logout").post(auth, logOut)
-router.route("/categories/create").get(auth,adminAuth,(req,res)=>{
-    console.log('creted')
-})
+
 
 export default router; // Export the router

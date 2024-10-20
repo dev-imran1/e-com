@@ -18,4 +18,4 @@ const categroySchema = new Schema({
 }, { timestamps: true })
 
 
-const category = mongoose.model("categroy", categroySchema)
+export const Category = mongoose.model("Categroy", categroySchema)

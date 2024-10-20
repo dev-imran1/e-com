@@ -12,8 +12,12 @@ app.use(cors({
 }))
 
 // all routes 
-import router from './routes/userRoute.js'
-app.use("/api/v1", router);
+import userRouter from './routes/userRoute.js'
+import categoryRouter from './routes/categoryRoute.js'
+import subCategoryRouter from './routes/subCategroyRoutes.js'
+app.use("/api/v1", userRouter);
+app.use("/api/v1",categoryRouter);
+app.use("/api/v1",subCategoryRouter);
 
 
 

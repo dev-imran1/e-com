@@ -1,9 +1,10 @@
-import { Category } from "../models/categorySchema.js";
+// import { sub } from "../models/categorySchema.js";
+import { SubCategory } from "../models/subCategorySchema.js";
 
-export const categoryCreate = async (req, res) => {
+export const subCategoryCreate = async (req, res) => {
     try {
         let newSlug
-        const { name, slug } = req.body
+        const { name, slug,category} = req.body
         if (!name) {
             return res.status(400).send({ error: "Category name is required" });
         }
@@ -14,15 +15,15 @@ export const categoryCreate = async (req, res) => {
             newSlug = slug.replace(/\s+/g, "-").toLowerCase();
         }
 
-        const existingCategory = await Category.findOne({ name });
+        const existingCategory = await subCategory.findOne({ name });
         if (existingCategory) {
             return res.status(400).send({ error: "Category name already exists" });
         }
 
         // Create a new category
-        const category = await Category.create({ name, slug: newSlug });
+        const subCategory = await SubCategory.create({ name, slug: newSlug });
         // await category.save()
-        return res.status(201).send(category);
+        return res.status(201).send(subCategory,"subCategroycontrollers");
 
     } catch (error) {
         if (error.code === 11000) {
