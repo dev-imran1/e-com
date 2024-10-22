@@ -1,11 +1,11 @@
-
 export const adminAuth = async (req, res,next) => {
     try {
-        if (req.user.role == "user" && req.user.role == "seller") {
+        // let user
+        if (!(req.user.role === "admin")) {
             req.user = user
+            return res.send('adminAtuh acces denied')
         }
         next()
-        return res.send('adminAtuh acces denied')
     } catch (error) {
         console.error("adminauth verification error:", error.message);
         return res.status(401).send({ error: 'Unauthorized: Invalid or expired token' });

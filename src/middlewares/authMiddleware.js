@@ -33,16 +33,16 @@ export const auth = async (req, res, next) => {
         req.user = user;
 
         // Proceed to the next middleware or route handler
-        next();
     } catch (error) {
         // Check for specific error: TokenExpiredError
         if (error.name === 'TokenExpiredError') {
             console.error('JWT expired:', error.message);
             return res.status(401).send({ error: 'Token has expired, please login again' });
         }
-
+        
         // Catch and log other JWT errors
         console.error("JWT verification error:", error.message);
         return res.status(401).send({ error: 'Unauthorized: Invalid or expired token' });
     }
+    next();
 };
