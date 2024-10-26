@@ -1,37 +1,50 @@
-// import { sub } from "../models/categorySchema.js";
+import { Category } from "../models/categorySchema.js";
 import { SubCategory } from "../models/subCategorySchema.js";
 
-export const subCategoryCreate = async (req, res) => {
+const subCategoryCreate = async (req, res) => {
+    let newSlug
     try {
-        let newSlug
-        const { name, slug,category} = req.body
-        if (!name) {
-            return res.status(400).send({ error: "Category name is required" });
+        const { name, slug, category } = req.body
+        if (!(name && category)) {
+            return res.json({ error: "name and categrit is required" });
         }
 
         if (!slug) {
-            newSlug = name.replace(/\s+/g, "-").toLowerCase(); // Replace all spaces with hyphens
+            newSlug = name.replace(" ", "-").toLowerCase();
         } else {
-            newSlug = slug.replace(/\s+/g, "-").toLowerCase();
+            newSlug = slug.replace(" ", "-").toLowerCase();
         }
 
-        const existingCategory = await subCategory.findOne({ name });
-        if (existingCategory) {
-            return res.status(400).send({ error: "Category name already exists" });
-        }
-
-        // Create a new category
-        const subCategory = await SubCategory.create({ name, slug: newSlug });
+        // const existingCategory = await subCategory.findOne({ name });
+        // if (existingCategory) {
+        //     return res.status(400).send({ error: "Category name already exists" });
+        // }
+        const subCategory = await SubCategory.create({ name, slug: newSlug, category });
+        await Category.updateOne({_id:category},{$push:{subCategory:subCategory._id}})
+        // // Create a new category
         // await category.save()
-        return res.status(201).send(subCategory,"subCategroycontrollers");
+        return res.json({ subCategory });
 
     } catch (error) {
         if (error.code === 11000) {
             // Handle duplicate key error
-            return res.status(400).send({ error: "Category with this name or slug already exists" });
+            return res.json({ error: "Category with this name or slug already exists" });
         }
-
         console.error("Error creating category:", error);
-        return res.status(500).send({ error: "Internal Server Error" });
+        return res.json({ error: "Internal Server Error" });
     }
 };
+
+
+const allSubCategroy = async (req,res) => {
+    try {
+        const data = await SubCategory.find().populate("category")
+        return res.json({data})
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+export {subCategoryCreate,allSubCategroy} 

@@ -19,19 +19,13 @@ export const categoryCreate = async (req, res) => {
             return res.status(400).json({ error: "Category name already exists" });
         }
 
+        
         // Create a new category
         const category = await Category.create({ name, slug: newSlug });
-        // await category.save()
+        await category.save()
         return res.status(201).json({category});
 
     } catch (error) {
-        // if (error.code === 11000) {
-        //     // Handle duplicate key error
-        //     return res.status(400).json({ error: "Category with this name or slug already exists" });
-        // }
-
-        // console.error("Error creating category:", error);
-        // return res.status(500).json({ error: "Internal Server Error" });
         console.log('error cacon',error.message)
     }
 }

@@ -11,11 +11,13 @@ const categroySchema = new Schema({
         unique: true,
         required: true
     },
-    subCategory: {
-        type: mongoose.Types.ObjectId,
-        ref: "subcategory"
-    }
+    subCategory: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "subcategory"
+        }
+    ]
 }, { timestamps: true })
 
 
-export const Category = mongoose.model("Categroy", categroySchema)
+export const Category = mongoose.model("Category", categroySchema)
