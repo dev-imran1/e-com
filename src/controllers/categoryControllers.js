@@ -22,7 +22,7 @@ export const categoryCreate = async (req, res) => {
         
         // Create a new category
         const category = await Category.create({ name, slug: newSlug });
-        await category.save()
+        // await category.save()
         return res.status(201).json({category});
 
     } catch (error) {
