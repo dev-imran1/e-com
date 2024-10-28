@@ -12,11 +12,13 @@ const productSchema = new Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Category"
+        ref: "Category",
+        required: true
     },
     subCategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "subCategory"
+        ref: "subCategory",
+        required: true
     },
     inventroy: [
         {
@@ -25,11 +27,23 @@ const productSchema = new Schema({
         }
     ],
     thumbnail: {
-        type: String
+        public_Id: {
+            type: String,
+            required: true
+        },
+        imagePath: {
+            type: String,
+            required: true
+        }
     },
     gallery: [
         {
-            type: String
+            public_Id: {
+                type: String,
+            },
+            imagePath: {
+                type: String,
+            }
         }
     ],
     description: {

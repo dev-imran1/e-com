@@ -46,5 +46,4 @@ const allSubCategroy = async (req,res) => {
     }
 }
 
-
 export {subCategoryCreate,allSubCategroy} 

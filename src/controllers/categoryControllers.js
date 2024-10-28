@@ -7,25 +7,19 @@ export const categoryCreate = async (req, res) => {
         if (!name) {
             return res.status(400).json({ error: "Category name is required" });
         }
-
         if (!slug) {
-            newSlug = name.replace(/\s+/g, "-").toLowerCase(); // Replace all spaces with hyphens
+            newSlug = name.replaceAll(" ", "-").toLowerCase();
         } else {
-            newSlug = slug.replace(/\s+/g, "-").toLowerCase();
+            newSlug = slug.replaceAll(" ", "-").toLowerCase();
         }
-
         const existingCategory = await Category.findOne({ name });
         if (existingCategory) {
             return res.status(400).json({ error: "Category name already exists" });
         }
-
-        
-        // Create a new category
         const category = await Category.create({ name, slug: newSlug });
-        // await category.save()
         return res.status(201).json({category});
 
     } catch (error) {
-        console.log('error cacon',error.message)
+        console.log('error categoryControllers',error.message)
     }
 }
