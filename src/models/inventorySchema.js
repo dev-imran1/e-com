@@ -17,7 +17,7 @@ const inventorySchema = new Schema({
         price: {
             type: Number,
         },
-        type: {
+        typeOfDiscount: {
             type: String,
             enum: ["amount", "parcentage"]
         }
