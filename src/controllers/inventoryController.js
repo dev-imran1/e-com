@@ -1,5 +1,6 @@
 import { Inventory } from "../models/inventorySchema.js";
 import { Product } from "../models/productModelSchema.js";
+
 const createInventory = async (req, res) => {
   try {
     const {product,variation,purchasePrice,sellingPrice,discountPrice,quantity} = req.body;
@@ -34,4 +35,25 @@ const updateInventory = async (req, res) => {
   }
 };
 
-export { createInventory ,updateInventory};
+const allInventory = async (req, res) => {
+  try {
+    const inventory = await Inventory.find().populate("product").populate("variation")
+    return res.json(inventory)
+
+  } catch (error) {
+    
+  }
+};
+const deleteInventory = async (req, res) => {
+  try {
+    const {id} = req.params
+    const inventory = await Inventory.findByIdAndDelete({_id:id})
+   return res.send("inventory deleted")
+    // return res.json(inventory)
+
+  } catch (error) {
+    
+  }
+};
+
+export { createInventory ,updateInventory,allInventory,deleteInventory};
