@@ -1,3 +1,4 @@
+import { Inventory } from "../models/inventorySchema.js";
 import { Product } from "../models/productModelSchema.js";
 import { cloudinaryUpload } from "../services/cloudinary.js";
 
@@ -60,5 +61,16 @@ const createProduct = async (req, res) => {
         console.log(error.message)
     }
 }
+
+const deleteProduct = (req, res) => {
+
+    try {
+        const { id } = req.params
+         Inventory.deleteMany({product:id})
+        res.send("product deleted")
+    } catch (error) {
+        
+    }
+}
  
-export { createProduct }
+export { createProduct,deleteProduct }
