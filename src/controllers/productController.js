@@ -1,3 +1,4 @@
+import { Category } from "../models/categorySchema.js";
 import { Inventory } from "../models/inventorySchema.js";
 import { Product } from "../models/productModelSchema.js";
 import { cloudinaryUpload } from "../services/cloudinary.js";
@@ -74,27 +75,42 @@ const deleteProduct = (req, res) => {
 
 const pagination = async (req, res) => {
   try {
-    const { page, limit } = req.query;
-    let currentPage = 1;
-    if (page < 1) {
-      const baseUrl = limit || 2;
-      const skip = Number(currentPage - 1) * baseUrl;
-      const products = await Product.find().skip(skip).limit(baseUrl);
-      const totalProductCount = await Product.countDocuments();
-      const totalpage = await Math.ceil((totalProductCount/baseUrl))
-      console.log(totalpage)
-    } else {
-      const baseUrl = limit || 2;
-      const skip = Number(currentPage - 1) * baseUrl;
-      const products = await Product.find().skip(skip).limit(baseUrl);
-      const totalProductCount = await Product.countDocuments();
-      // console.log(totalProductCount);
-      const totalpage = await Math.ceil((totalProductCount/baseUrl))
-      console.log(totalpage,'aaa')
+    const { page, limit, category } = req.query;
+    let filter = {};
+    if (category) {
+      const categoryDoc = await Category.findOne({ name: category });
+      if (categoryDoc) {
+        filter.category = categoryDoc._id //buji nai
+      }
     }
+
+    const produts = await Product.find(filter).populate({path:"category",select:"name"})
+    console.log(produts)
   } catch (error) {
-    console.log(error, "catch error in pagination controller");
+    return res.json(error.message);
   }
+  // try {
+  //   const { page, limit } = req.query;
+  //   let currentPage = 1;
+  //   if (page < 1) {
+  //     const baseUrl = limit || 2;
+  //     const skip = Number(currentPage - 1) * baseUrl;
+  //     const products = await Product.find().skip(skip).limit(baseUrl);
+  //     const totalProductCount = await Product.countDocuments();
+  //     const totalpage = await Math.ceil((totalProductCount/baseUrl))
+  //     console.log(totalpage)
+  //   } else {
+  //     const baseUrl = limit || 2;
+  //     const skip = Number(currentPage - 1) * baseUrl;
+  //     const products = await Product.find().skip(skip).limit(baseUrl);
+  //     const totalProductCount = await Product.countDocuments();
+  //     // console.log(totalProductCount);
+  //     const totalpage = await Math.ceil((totalProductCount/baseUrl))
+  //     console.log(totalpage,'aaa')
+  //   }
+  // } catch (error) {
+  //   console.log(error, "catch error in pagination controller");
+  // }
 };
 
 export { createProduct, deleteProduct, pagination };

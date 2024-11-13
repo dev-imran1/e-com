@@ -23,6 +23,10 @@ const updateInventory = async (req, res) => {
     const {id} = req.params
     const {product,variation,purchasePrice,sellingPrice,discountPrice,quantity} = req.body;
 
+    if ([product, variation, purchasePrice, sellingPrice, discountPrice, quantity].some((field) => field === "")) {
+      return res.json("All fields are required")
+    }
+    
     const isFound = await Inventory.findById({_id:id})
     if (!isFound) {
       return res.json("Inventory not found")
