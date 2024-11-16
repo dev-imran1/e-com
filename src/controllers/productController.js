@@ -1,6 +1,7 @@
 import { Category } from "../models/categorySchema.js";
 import { Inventory } from "../models/inventorySchema.js";
 import { Product } from "../models/productModelSchema.js";
+import { SubCategory } from "../models/subCategorySchema.js";
 import { cloudinaryUpload } from "../services/cloudinary.js";
 
 const createProduct = async (req, res) => {
@@ -75,42 +76,57 @@ const deleteProduct = (req, res) => {
 
 const pagination = async (req, res) => {
   try {
-    const { page, limit, category } = req.query;
+    const { page, limit, category, subcategory } = req.query;
     let filter = {};
     if (category) {
       const categoryDoc = await Category.findOne({ name: category });
       if (categoryDoc) {
-        filter.category = categoryDoc._id //buji nai
+        filter.category = categoryDoc._id; //buji nai
       }
     }
+    if (subcategory) {
+      const subcategoryDoc = await SubCategory.findOne({ name: subcategory });
+      console.log(subcategoryDoc);
+      if (subcategoryDoc) {
+        filter.subcategory = subcategoryDoc._id; //buji nai
+        console.log((filter.subcategory = subcategoryDoc._id), "test");
+      }
+    }
+    // const produts = await Product.find(filter).populate({path:"category",select:"name"}).populate({path:"subCategory",select:"name"})
+    // res.json({produts, total:produts.length})
 
-    const produts = await Product.find(filter).populate({path:"category",select:"name"})
-    console.log(produts)
+    let currentPage = 1;
+
+    if (page < 1) {
+      const baseUrl = limit || 2;
+      const skip = Number(currentPage - 1) * baseUrl;
+      const products = await Product.find(filter)
+        .populate({ path: "category", select: "name" })
+        .populate({ path: "subCategory", select: "name" })
+        .skip(skip)
+        .limit(baseUrl);
+
+      const totalProductCount = await Product.countDocuments();
+      const totalpage = await Math.ceil(totalProductCount / baseUrl);
+
+      console.log(totalpage);
+    } else {
+      
+      const baseUrl = limit || 2;
+      const skip = Number(currentPage - 1) * baseUrl;
+      const products = await Product.find(filter)
+        .populate({ path: "category", select: "name" })
+        .populate({ path: "subCategory", select: "name" })
+        .skip(skip)
+        .limit(baseUrl);
+      const totalProductCount = await Product.countDocuments();
+      // console.log(totalProductCount);
+      const totalpage = await Math.ceil(totalProductCount / baseUrl);
+      res.json({products,totalpage,totalProductCount,baseUrl,currentPage,length:products.length})
+    }
   } catch (error) {
     return res.json(error.message);
   }
-  // try {
-  //   const { page, limit } = req.query;
-  //   let currentPage = 1;
-  //   if (page < 1) {
-  //     const baseUrl = limit || 2;
-  //     const skip = Number(currentPage - 1) * baseUrl;
-  //     const products = await Product.find().skip(skip).limit(baseUrl);
-  //     const totalProductCount = await Product.countDocuments();
-  //     const totalpage = await Math.ceil((totalProductCount/baseUrl))
-  //     console.log(totalpage)
-  //   } else {
-  //     const baseUrl = limit || 2;
-  //     const skip = Number(currentPage - 1) * baseUrl;
-  //     const products = await Product.find().skip(skip).limit(baseUrl);
-  //     const totalProductCount = await Product.countDocuments();
-  //     // console.log(totalProductCount);
-  //     const totalpage = await Math.ceil((totalProductCount/baseUrl))
-  //     console.log(totalpage,'aaa')
-  //   }
-  // } catch (error) {
-  //   console.log(error, "catch error in pagination controller");
-  // }
 };
 
 export { createProduct, deleteProduct, pagination };
