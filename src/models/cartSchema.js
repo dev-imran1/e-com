@@ -13,7 +13,7 @@ const cartSchema = new Schema({
         type:mongoose.Types.ObjectId,
         ref:"Inventory"
     },    
-    quntity:{
+    quantity:{
         type:Number
     },
   },{

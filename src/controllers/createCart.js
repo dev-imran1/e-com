@@ -2,7 +2,7 @@ import { Cart } from "../models/cartSchema.js";
 
 const createCart = async (req, res) => {
   try {
-    const { user, product, inventory, quntity } = req.body;
+    const { user, product, inventory, quantity } = req.body;
     if ([user, product, inventory, quntity].some((field) => field === "")) {
       res.json("all fills required");
     }
@@ -12,11 +12,11 @@ const createCart = async (req, res) => {
     if (isCart) {
       const cart = await Cart.findByIdAndUpdate(
         { _id: isCart.id },
-        { $inc: { quntity: 1 } },
+        { $inc: { quantity: 1 } },
         { new: true }
       );
     } else {
-      const cart = await Cart.create({ user, product, inventory, quntity });
+      const cart = await Cart.create({ user, product, inventory, quantity });
       res.json("cart crete");
     }
   } catch (error) {
@@ -32,14 +32,14 @@ const updateQuntity = async (req, res) => {
     if (value === "plus") {
       const cart = await Cart.findOneAndUpdate(
         { user, inventory },
-        { $inc: { quntity: 1 } },
+        { $inc: { quantity: 1 } },
         { new: true }
       );
       return res.json("value plus");
     } else if (value === "minus") {
       const cart = await Cart.findOneAndUpdate(
         { user, inventory },
-        { $inc: { quntity: -1 } },
+        { $inc: { quantity: -1 } },
         { new: true }
       );
       return res.json("value minus");
