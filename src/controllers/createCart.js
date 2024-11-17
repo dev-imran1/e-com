@@ -1,4 +1,4 @@
-import { Cart } from "../models/cartModel.js";
+import { Cart } from "../models/cartSchema.js";
 
 const createCart = async (req, res) => {
   try {
@@ -42,7 +42,7 @@ const updateQuntity = async (req, res) => {
         { $inc: { quntity: -1 } },
         { new: true }
       );
-      return res.json("value plus");
+      return res.json("value minus");
     }
   } catch (error) {
     console.log(error, "updatequntity");
