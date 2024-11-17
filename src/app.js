@@ -20,11 +20,16 @@ import subCategoryRouter from "./routes/subCategroyRoutes.js";
 import productRouter from "./routes/productRoute.js";
 import variationRouter from "./routes/variationsRoute.js";
 import inventoryiRouter from "./routes/inventoryRoute.js";
+import av from "./routes/cartRoute.js";
+
+
+
 app.use("/api/v1", userRouter);
 app.use("/api/v1", categoryRouter);
 app.use("/api/v1", subCategoryRouter);
 app.use("/api/v1", productRouter);
 app.use("/api/v1", variationRouter);
 app.use("/api/v1", inventoryiRouter);
+app.use("/api/v1", av);
 
 export default app;
