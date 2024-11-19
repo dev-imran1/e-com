@@ -20,7 +20,8 @@ import subCategoryRouter from "./routes/subCategroyRoutes.js";
 import productRouter from "./routes/productRoute.js";
 import variationRouter from "./routes/variationsRoute.js";
 import inventoryiRouter from "./routes/inventoryRoute.js";
-import av from "./routes/cartRoute.js";
+import cartRouter from "./routes/cartRoute.js";
+import orderRouter from "./routes/orderRoute.js";
 
 
 
@@ -30,6 +31,7 @@ app.use("/api/v1", subCategoryRouter);
 app.use("/api/v1", productRouter);
 app.use("/api/v1", variationRouter);
 app.use("/api/v1", inventoryiRouter);
-app.use("/api/v1", av);
+app.use("/api/v1", cartRouter);
+app.use("/api/v1", orderRouter);
 
 export default app;

@@ -3,7 +3,7 @@ import { Cart } from "../models/cartSchema.js";
 const createCart = async (req, res) => {
   try {
     const { user, product, inventory, quantity } = req.body;
-    if ([user, product, inventory, quntity].some((field) => field === "")) {
+    if ([user, product, inventory, quantity].some((field) => field === "")) {
       res.json("all fills required");
     }
 

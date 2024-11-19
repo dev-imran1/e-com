@@ -2,20 +2,22 @@ import mongoose, { Schema } from "mongoose";
 
 const shippingSchema = new Schema(
   {
-    name: String,
-    country: {
+    sname: String,
+    scountry: {
       type: String,
       default: "bangladesh",
     },
-    address: String,
-    city: String,
-    distict: String,
-    postcode: String,
-    phone: String,
-    email: String,
-    shippingCost: Number,
+    saddress: String,
+    scity: String,
+    sdistict: String,
+    spostcode: String,
+    sphone: String,
+    semail: String,
+    // shippingCost: Number,
   },
   {
     timestamps: true,
   }
 );
+
+export const Shipping = mongoose.model("Shipping", shippingSchema);

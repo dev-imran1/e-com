@@ -17,6 +17,7 @@ const orderSchema = new Schema(
       type: String,
       default: "bangladesh",
     },
+
     address: String,
     city: String,
     distict: String,
@@ -41,11 +42,15 @@ const orderSchema = new Schema(
       ],
     },
     returnInfo: String,
+    isShipping: {
+      type: Boolean,
+      default: false,
+    },
     shipping: {
       type: mongoose.Types.ObjectId,
       ref: "Shipping",
     },
-    allproducts: [
+    orderedProducts: [
       {
         productDetails: {
           type: mongoose.Types.ObjectId,
@@ -55,8 +60,8 @@ const orderSchema = new Schema(
           type: mongoose.Types.ObjectId,
           ref: "Inventory",
         },
-        price:Number,
-        quantity:Number,
+        price: Number,
+        quantity: Number,
       },
     ],
   },
@@ -64,3 +69,5 @@ const orderSchema = new Schema(
     timestamps: true,
   }
 );
+
+export const Order = mongoose.model("Order", orderSchema);
