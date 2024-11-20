@@ -7,7 +7,7 @@ const orderSchema = new Schema(
       ref: "User",
     },
     orderId: {
-      type: Number,
+      type: String,
       unique: true,
     },
     total: Number,
@@ -52,7 +52,7 @@ const orderSchema = new Schema(
     },
     orderedProducts: [
       {
-        productDetails: {
+        product: {
           type: mongoose.Types.ObjectId,
           ref: "Product",
         },
