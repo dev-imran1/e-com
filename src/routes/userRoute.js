@@ -8,14 +8,11 @@ import { upload } from '../middlewares/multerMiddleware.js';
 import { auth } from '../middlewares/authMiddleware.js';
 import { adminAuth } from '../middlewares/adminAuthMiddleware.js';
 
-
-
-router.route("/users").post(createUser); // Defines POST route to create a user
-router.route("/users/registration").post(validationMiddleware, createUser); // Defines POST route to create a user
+router.route("/users").post(validationMiddleware,createUser);
 router.route("/users/:link").get(emailVerify)
 router.route("/users/login").post(login)
 router.route("/users/update").post(auth, upload.single('profilePic'), userUpdate)
-router.route("/users/logout").post(auth, logOut)
+router.route("/users/logout").post(auth,logOut)
 
 
 export default router; // Export the router

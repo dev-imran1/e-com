@@ -1,14 +1,15 @@
 import { Cart } from "../models/cartSchema.js";
+import apiResponse from "../utlis/ApiResponse.js";
+
 
 const createCart = async (req, res) => {
   try {
     const { user, product, inventory, quantity } = req.body;
     if ([user, product, inventory, quantity].some((field) => field === "")) {
-      res.json("all fills required");
+      return res.json(new apiResponse(400,"all fills required"));
     }
 
     const isCart = await Cart.findOne({ user, inventory });
-    console.log({ isCart });
     if (isCart) {
       const cart = await Cart.findByIdAndUpdate(
         { _id: isCart.id },
@@ -17,17 +18,17 @@ const createCart = async (req, res) => {
       );
     } else {
       const cart = await Cart.create({ user, product, inventory, quantity });
-      res.json("cart crete");
+      return res.json(new apiResponse(200,"cart crete",{cart}));
     }
   } catch (error) {
-    console.log("error categoryControllers", error.message);
+   return res.json(new apiResponse({error}))
   }
 };
 const updateQuntity = async (req, res) => {
   try {
     const { user, inventory, value } = req.body;
     if ([user, inventory, value].some((field) => field === "")) {
-      res.send("all files required");
+      return res.json(new apiResponse(400,"all files required"));
     }
     if (value === "plus") {
       const cart = await Cart.findOneAndUpdate(
@@ -35,17 +36,17 @@ const updateQuntity = async (req, res) => {
         { $inc: { quantity: 1 } },
         { new: true }
       );
-      return res.json("value plus");
+      return res.json(new apiResponse("value Plus"));
     } else if (value === "minus") {
       const cart = await Cart.findOneAndUpdate(
         { user, inventory },
         { $inc: { quantity: -1 } },
         { new: true }
       );
-      return res.json("value minus");
+      return res.json(new apiResponse("value minus"));
     }
   } catch (error) {
-    console.log(error, "updatequntity");
+    return res.json(new apiResponse({error}))
   }
 };
 
