@@ -85,8 +85,8 @@ const login = async (req, res) => {
     }
 
     // Find the user by email
-    const userFounds = await User.findOne({ email }).select("password");
-
+    const userFounds = await User.findOne({ email }).select("displayName password email role");
+console.log(userFounds)
     if (!userFounds) {
       return res.status(404).send("Account Not find");
     }
@@ -105,8 +105,8 @@ const login = async (req, res) => {
 
     return res.json(new apiResponse(200,"lgin",{userFounds,accessToken,refreshToken}))
 
-    const user = await User.findById({_id:userFounds._id}).select("-password")
-    res.json(new apiResponse(200,'login successfull',{user,accessToken,refreshToken}))
+    // const user = await User.findById({_id:userFounds._id}).select("-password")
+    // res.json(new apiResponse(200,'login successfull',{user,accessToken,refreshToken}))
   } catch (error) {
     return res.json(new apiResponse({error:error.message}))
   }
@@ -115,7 +115,8 @@ const login = async (req, res) => {
 const userUpdate = async (req, res) => {
   try {
     const { path } = req.file;
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
+     res.json(new apiResponse(400,"user",user))
     if (user) {
       const result = await cloudinaryUpload(
         path,
@@ -125,6 +126,7 @@ const userUpdate = async (req, res) => {
       user.profilePic = result.optimizeUrl;
       user.public_id = result.uploadResult.public_id;
       await user.save();
+      console.log(result)
       res.send("okay");
     } else {
       res.send("wrong file");
@@ -145,4 +147,10 @@ const logOut = async (req, res) => {
 }
 };
 
-export { createUser, emailVerify, login, userUpdate, logOut };
+const getUser = async (req,res)=>{
+  const {id} = req.query;
+  const user =await User.findById({_id:id}).select("-password","-refreshToken")
+  return res.json(new apiResponse(200,"user details",user))
+}
+
+export { createUser, emailVerify, login, userUpdate, logOut,getUser };
