@@ -9,6 +9,7 @@ import { categoryCreate, getCategory } from '../controllers/categoryControllers.
 
 
 router.route("/category/create").post(auth,adminAuth,categoryCreate)
+// router.route("/category/create").post(auth,categoryCreate)
 router.route("/categories").get(getCategory)
 
 export default router; 

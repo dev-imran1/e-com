@@ -10,10 +10,10 @@ import { adminAuth } from '../middlewares/adminAuthMiddleware.js';
 
 router.route("/users").post(validationMiddleware,createUser);
 router.route("/users/:link").get(emailVerify)
+router.route("/users/:id").get(getUser)
+router.route("/users/logout").post(auth,logOut)
 router.route("/users/login").post(login)
 router.route("/users/update").post(auth, upload.single('profilePic'), userUpdate)
-router.route("/users/logout").post(auth,logOut)
-router.route("/users/:id").get(getUser)
 
 
 export default router; // Export the router
