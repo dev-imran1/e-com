@@ -3,6 +3,7 @@ import { dbUrl } from "../config/index.js";
 
 
 const connectDb = async()=>{
+    console.log('database')
     try {
         await mongoose.connect(dbUrl)
         console.log('database connect')
@@ -12,4 +13,4 @@ const connectDb = async()=>{
 }
 
 
-export default connectDb
+export default connectDb 

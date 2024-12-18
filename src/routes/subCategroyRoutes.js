@@ -11,3 +11,4 @@ router.route("/subcategories").get(allSubCategroy)
 router.route("/subcategories/create").post(auth, adminAuth, subCategoryCreate)
 
 export default router; 
+ 

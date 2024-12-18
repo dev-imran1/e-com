@@ -6,11 +6,12 @@ cloudinary.config({
     api_key: '815661334941344',
     api_secret: '5acdei7fqkZWIB0SlBYt-m8hRH8' // Click 'View API Keys' above to copy your API secret
 });
-
+console.log('cloud')
 // Upload an image
 export const cloudinaryUpload = async (path, public_id, folder) => {
 
   let uploadResult;
+
 try{
     uploadResult = await cloudinary.uploader
         .upload(path, {

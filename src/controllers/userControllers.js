@@ -50,7 +50,7 @@ const createUser = async (req, res) => {
       "Please verify your email",
       verificationTemp(link)
     );
-    return res.json(new apiResponse(200, "user create", { user }));
+    return res.json(new apiResponse(200, "user create"));
   } catch (error) {
     console.error("Error creating user:", error);
     return res.json(new apiResponse({ error: error.message }));
@@ -97,9 +97,8 @@ const login = async (req, res) => {
 
     // Find the user by email
     const userFounds = await User.findOne({ email }).select(
-      "displayName password email role"
+      "displayName password email role profilePicture"
     );
-    console.log(userFounds);
     if (!userFounds) {
       return res.status(404).send("Account Not find");
     }
@@ -131,19 +130,18 @@ const userUpdate = async (req, res) => {
     const { path } = req.file;
     const user = await User.findById(req.user._id);
     if (user) {
-      console.log("user thkee")
+      console.log(user, "userupdatecontroller");
       const result = await cloudinaryUpload(
         path,
         user.displayName,
         "profilePic"
       );
-      // console.log(result,"result")
       user.profilePicture = result.uploadResult.url;
       user.public_Id = result.uploadResult.public_id;
       await user.save();
-      return res.json({message:"ok",user:user})
-      // console.log(user)
-      // return res.json(apiResponse(200,"Profile Picture Updated", user))
+      return res.json(
+        new apiResponse(200, "Profile Picture Updated", { user: user })
+      );
     } else {
       res.send("wrong file");
     }
@@ -151,8 +149,6 @@ const userUpdate = async (req, res) => {
     return res.json(new apiResponse({ error: error.message }));
   }
 };
-
-// 45 munites
 
 const logOut = async (req, res) => {
   try {
@@ -166,12 +162,17 @@ const logOut = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { id } = req.query;
-  const user = await User.findById({ _id: id }).select(
-    "-password",
-    "-refreshToken"
-  );
-  return res.json(new apiResponse(200, "user details", user));
+  try {
+    const { id } = req.params;
+    const user = await User.findById({ _id: id })
+    // .select(
+    //   "-password",
+    //   "-refreshToken"
+    // );
+    return res.json(new apiResponse(200, "user details", user));
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 export { createUser, emailVerify, login, userUpdate, logOut, getUser };
